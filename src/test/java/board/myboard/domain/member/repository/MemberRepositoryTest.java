@@ -6,6 +6,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -47,6 +49,36 @@ class MemberRepositoryTest {
 
     @Test
     public void 성공_회원수정() throws Exception{
+        //given
+        String updatePassword = "1234567890";
+
+        Member member = Member.builder()
+                .userid("TEST00")
+                .name("박동준")
+                .password("1234567")
+                .nickName("dongurijun")
+                .role(Role.USER)
+                .age(22)
+                .build();
+        memberRepository.save(member);
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        //when
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow(() -> new Exception());
+        findMember.updateAge(29);
+        findMember.updateName("박동준UPDATE");
+        findMember.updateNickName("dongjun");
+        findMember.updatePassword(passwordEncoder, updatePassword);
+        em.flush();
+
+        //then
+        Member findUpdateMember = memberRepository.findById(findMember.getId()).orElseThrow(() -> new Exception());
+
+        Assertions.assertThat(findMember.equals(findUpdateMember));
+        Assertions.assertThat(passwordEncoder.matches(updatePassword, findMember.getPassword())).isTrue();
+
+
 
     }
 }

@@ -9,6 +9,7 @@ import javax.servlet.Filter;
 /**
  * 시큐리티를 이용한 JSON 데이터로 로그인
  *
+ *
  * 스프링 버전이 업데이트 됨에 따라 WebSecurityConfigurerAdapter와 그 외 몇 가지들이 Deprecated.
  *
  * 기존에는 WebSecurityConfigurerAdapter를 상속받아 설정을 오버라이딩 하는 방식이었는데

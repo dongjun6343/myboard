@@ -1,8 +1,14 @@
 package board.myboard.global.config;
 
+import board.myboard.global.login.filter.JsonUsernamePasswordAuthFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
@@ -28,7 +34,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final ObjectMapper objectMapper;
     /**
      * JSON을 통해 로그인을 진행
      * refreshToken이 만료되기전까지는 토큰을 인증을 진행할거라서
@@ -59,8 +68,27 @@ public class SecurityConfig {
                 return http.build();
     }
 
+    // 1 - PasswordEncoder 등록
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    // 2 - AuthenticationManager 등록
+    @Bean
+    public AuthenticationManager authenticationManager(){
+        // DaoAuthenticationProvider 사용
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        // PasswordEncoder로는 PasswordEncoderFactories.createDelegatingPasswordEncoder() 사용
+        provider.setPasswordEncoder(passwordEncoder());
+
+        return new ProviderManager(provider);
+    }
+
+    @Bean
+    public JsonUsernamePasswordAuthFilter jsonUsernamePasswordAuthFilter(){
+        JsonUsernamePasswordAuthFilter jsonUsernamePasswordLoginFilter =
+                new JsonUsernamePasswordAuthFilter(objectMapper);
+        return jsonUsernamePasswordLoginFilter;
     }
 }

@@ -57,7 +57,7 @@ public class JsonUsernamePasswordAuthFilter extends AbstractAuthenticationProces
         String password = usernamePasswordMap.get(PASSWORD_KEY);
 
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,password);
-
+        // AnticationManager => SecurityConfig 파일에서 설정해줄것.
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 }

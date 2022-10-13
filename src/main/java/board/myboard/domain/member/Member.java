@@ -31,7 +31,7 @@ public class Member extends BaseTimeEntity {
     private Long id; //PK
 
     @Column(nullable = false, length = 30, unique = true)
-    private String userid; //아이디
+    private String username; //아이디
 
     private String password;
 
@@ -46,6 +46,18 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
+
+    // RefreshToken 추가
+    @Column(length = 1000)
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+
+    public void deleteRefreshToken(){
+        this.refreshToken = null;
+    }
 
     //정보 수정
     public void updatePassword(PasswordEncoder passwordEncoder, String password){
@@ -70,8 +82,8 @@ public class Member extends BaseTimeEntity {
     }
 
     @Builder
-    public Member(String userid, String password, String name, String nickName, int age, Role role) {
-        this.userid = userid;
+    public Member(String username, String password, String name, String nickName, int age, Role role) {
+        this.username = username;
         this.password = password;
         this.name = name;
         this.nickName = nickName;

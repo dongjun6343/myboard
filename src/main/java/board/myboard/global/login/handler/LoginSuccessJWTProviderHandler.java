@@ -15,12 +15,17 @@ public class LoginSuccessJWTProviderHandler extends SimpleUrlAuthenticationSucce
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        log.info("로그인에 성공합니다. JWT를 발급합니다. userid: {}", userDetails.getUsername());
+        String username = extractUsername(authentication);
+        log.info("로그인에 성공합니다. JWT를 발급합니다. username: {}", username);
 
         response.getWriter().write("success");
 
         // 아직 JWT발급은 구현하지 않음. --> 나중에 구현할 예정.
+    }
+
+    private String extractUsername(Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
     }
 }

@@ -26,7 +26,7 @@ class MemberRepositoryTest {
         //given
         // 변수값
         Member member = Member.builder()
-                .userid("TEST00")
+                .username("TEST00")
                 .name("박동준")
                 .password("1234567")
                 .nickName("dongurijun")
@@ -53,7 +53,7 @@ class MemberRepositoryTest {
         String updatePassword = "1234567890";
 
         Member member = Member.builder()
-                .userid("TEST00")
+                .username("TEST00")
                 .name("박동준")
                 .password("1234567")
                 .nickName("dongurijun")

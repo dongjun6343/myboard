@@ -17,3 +17,14 @@ logging:
     org.hibernate.SQL: debug
     # org.hibernate.type: trace : parameter값을 로그 찍어줌.
     org.hibernate.type: trace
+
+jwt:
+  secret: ZG9uZ2h1bi1zaGFycC1kYnJ1YS13ZWItcHJvamVjdC11c2luZy1qd3Qtc2VjcmV0LURvbmdodW4tc3ByaW5nLWJvb3Qtand0LWJhY2stZW5kLWFuZC1qcy1jb2xsYWJv
+
+  access:
+    expiration: 20000
+    header: Authorization
+
+  refresh:
+    expiration: 90
+    header: Authorization-refresh

@@ -18,13 +18,13 @@ public class LoginService implements UserDetailsService {
     // DB에서 User정보를 찾아서 반환.
     // 성공처리와 실패처리를 할 Handler 구현필요.
     @Override
-    public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByUserid(userid).orElseThrow(
+        Member member = memberRepository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException("해당 아이디가 없습니다.")
         );
 
-        return User.builder().username(member.getUserid())
+        return User.builder().username(member.getUsername())
                 .password(member.getPassword())
                 .roles(member.getRole().name())
                 .build();

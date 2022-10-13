@@ -44,9 +44,9 @@ public class LoginTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    private static String KEY_USERID = "userid";
+    private static String KEY_USERNAME = "username";
     private static String KEY_PASSWORD = "password";
-    private static String USERID = "userid";
+    private static String USERNAME = "username";
     private static String PASSWORD = "123456789";
 
     private static String POST_URL = "/login";
@@ -59,19 +59,19 @@ public class LoginTest {
     @BeforeEach
     private void init(){
         memberRepository.save(Member.builder()
-                        .userid(USERID)
+                        .username(USERNAME)
                         .password(passwordEncoder.encode(PASSWORD))
                         .name("MEMBER1")
                         .nickName("NickName1")
                         .role(Role.USER)
                         .age(28)
                         .build());
-        clear();
+       clear();
     }
 
     private Map getUseridPasswordSetting(String userid, String password){
         Map<String, String> map = new HashMap<>();
-        map.put(KEY_USERID, userid);
+        map.put(KEY_USERNAME, userid);
         map.put(KEY_PASSWORD, password);
         return map;
     }
@@ -86,7 +86,7 @@ public class LoginTest {
     @Test
     public void 로그인_성공() throws Exception {
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID, PASSWORD);
+        Map<String, String> map = getUseridPasswordSetting(USERNAME, PASSWORD);
         //when
         MvcResult result = perform(POST_URL, MediaType.APPLICATION_JSON, map).
                 andDo(MockMvcResultHandlers.print())
@@ -99,7 +99,7 @@ public class LoginTest {
     @Test
     public void 로그인_아이디_오류_실패() throws Exception {
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID + "AAA", PASSWORD);
+        Map<String, String> map = getUseridPasswordSetting(USERNAME + "AAA", PASSWORD);
         //when
         MvcResult result = perform(POST_URL, MediaType.APPLICATION_JSON, map)
                 .andDo(MockMvcResultHandlers.print())
@@ -111,7 +111,7 @@ public class LoginTest {
     @Test
     public void 로그인_비밀번호_오류_실패() throws Exception {
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID,PASSWORD+"AAA");
+        Map<String, String> map = getUseridPasswordSetting(USERNAME,PASSWORD+"AAA");
         //when
         MvcResult result = perform(POST_URL, MediaType.APPLICATION_JSON, map)
                 .andDo(MockMvcResultHandlers.print())
@@ -123,7 +123,7 @@ public class LoginTest {
     @Test
     public void 로그인_URL_오류_실패() throws  Exception{
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID, PASSWORD);
+        Map<String, String> map = getUseridPasswordSetting(USERNAME, PASSWORD);
         //when
         perform(POST_URL+"111", MediaType.APPLICATION_JSON, map)
                 .andDo(MockMvcResultHandlers.print())
@@ -135,7 +135,7 @@ public class LoginTest {
     @Test
     public void 로그인_데이터형식_JSON_아님_실패() throws Exception {
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID, PASSWORD);
+        Map<String, String> map = getUseridPasswordSetting(USERNAME, PASSWORD);
         //when
         perform(POST_URL, MediaType.APPLICATION_XML, map)
                 .andDo(MockMvcResultHandlers.print())
@@ -147,7 +147,7 @@ public class LoginTest {
     @Test
     public void 로그인_HTTP_METHOD_GET_실패() throws Exception {
         //given
-        Map<String, String> map = getUseridPasswordSetting(USERID, PASSWORD);
+        Map<String, String> map = getUseridPasswordSetting(USERNAME, PASSWORD);
         //when
         ResultActions resultActions =  mockMvc.perform(MockMvcRequestBuilders
                         .get(POST_URL)

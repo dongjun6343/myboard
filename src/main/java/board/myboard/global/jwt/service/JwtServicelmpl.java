@@ -96,7 +96,7 @@ public class JwtServicelmpl implements JwtService {
         response.setStatus(HttpServletResponse.SC_OK);
 
         setAccessTokenHeader(response, accessToken);
-        setAccessTokenHeader(response, refreshToken);
+        setRefreshTokenHeader(response, refreshToken);
 
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put(ACCESS_TOKEN_SUBJECT, accessToken);

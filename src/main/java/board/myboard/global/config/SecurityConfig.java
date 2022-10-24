@@ -1,7 +1,10 @@
 package board.myboard.global.config;
 
+import board.myboard.domain.member.repository.MemberRepository;
 import board.myboard.domain.member.service.LoginService;
+import board.myboard.global.jwt.service.JwtService;
 import board.myboard.global.login.filter.JsonUsernamePasswordAuthFilter;
+import board.myboard.global.login.filter.JwtAuthenticationProcessingFilter;
 import board.myboard.global.login.handler.LoginFailHandler;
 import board.myboard.global.login.handler.LoginSuccessJWTProviderHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +46,10 @@ public class SecurityConfig {
 
     private final LoginService loginService;
     private final ObjectMapper objectMapper;
+
+    private final JwtService jwtService;
+    private final MemberRepository memberRepository;
+
     /**
      * JSON을 통해 로그인을 진행
      * refreshToken이 만료되기전까지는 토큰을 인증을 진행할거라서
@@ -71,6 +78,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
 
                 http.addFilterAfter(jsonUsernamePasswordAuthFilter(), LogoutFilter.class);
+                http.addFilterBefore(jwtAuthenticationProcessingFilter(), JsonUsernamePasswordAuthFilter.class);
 
                 return http.build();
     }
@@ -95,7 +103,8 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessJWTProviderHandler loginSuccessJWTProviderHandler(){
-        return new LoginSuccessJWTProviderHandler();
+        // LoginSuccessJWTProviderHandler -> @RequiredArgsConstructor 를 활용한 생성자 주입
+        return new LoginSuccessJWTProviderHandler(jwtService, memberRepository);
     }
 
     @Bean
@@ -113,6 +122,14 @@ public class SecurityConfig {
         jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProviderHandler());
         jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailHandler());
 
+        return jsonUsernamePasswordLoginFilter;
+    }
+
+    @Bean
+    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter(){
+        JwtAuthenticationProcessingFilter jsonUsernamePasswordLoginFilter = new JwtAuthenticationProcessingFilter(
+                jwtService,memberRepository
+        );
         return jsonUsernamePasswordLoginFilter;
     }
 }

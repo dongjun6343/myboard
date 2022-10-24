@@ -225,4 +225,33 @@ class JwtServiceTest {
         Assertions.assertThat(getVerify(extractAccessToken).getClaim(USERNAME_CLAIM).asString()).isEqualTo(username);
 
     }
+    @Test
+    public void extractRefreshToken_RefreshToken_추출_성공() throws Exception {
+        //given
+        String acessToken = jwtService.createAccessToken(username);
+        String refreshToken = jwtService.createRefreshToken();
+        HttpServletRequest request = setRequest(acessToken, refreshToken);
+
+        //when
+        String extrackRefreshToken = jwtService.extractRefreshToken(request).orElseThrow(() -> new Exception("토큰이 없습니다."));
+
+        //then
+        Assertions.assertThat(extrackRefreshToken).isEqualTo(refreshToken);
+        Assertions.assertThat(getVerify(extrackRefreshToken).getSubject()).isEqualTo(REFRESH_TOKEN_SUBJECT);
+    }
+
+    @Test
+    public void extractUsername_Username_추출_성공() throws Exception{
+        //given
+        String accessToken = jwtService.createAccessToken(username);
+        String refreshToken = jwtService.createRefreshToken();
+        HttpServletRequest request = setRequest(accessToken, refreshToken);
+
+        String requestAccessToken = jwtService.extractAccessToken(request).orElseThrow(() -> new Exception("토큰이 없습니다."));
+        //when
+        String extrackUsername = jwtService.extractUsername(requestAccessToken).orElseThrow(() -> new Exception("토큰이 없습니다."));
+
+        //then
+        Assertions.assertThat(extrackUsername).isEqualTo(username);
+    }
 }
